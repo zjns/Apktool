@@ -17,6 +17,7 @@
 package brut.util;
 
 import brut.common.BrutException;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class AaptManager {
         File aaptBinary;
         String aaptVersion = getAaptBinaryName(version);
 
-        if (! OSDetection.is64Bit() && OSDetection.isMacOSX()) {
+        if (!OSDetection.is64Bit() && OSDetection.isMacOSX()) {
             throw new BrutException("32 bit OS detected. No 32 bit binaries available.");
         }
 
@@ -47,6 +48,11 @@ public class AaptManager {
                 aaptBinary = Jar.getResourceAsFile("/prebuilt/macosx/" + aaptVersion, AaptManager.class);
             } else if (OSDetection.isUnix()) {
                 aaptBinary = Jar.getResourceAsFile("/prebuilt/linux/" + aaptVersion, AaptManager.class);
+                if (OSDetection.isTermux() && version == 2) {
+                    String arch = OSDetection.osArch();
+                    String aapt = "aapt2_" + arch;
+                    aaptBinary = Jar.getResourceAsFile("/prebuilt/android/" + aapt, AaptManager.class);
+                }
             } else if (OSDetection.isWindows()) {
                 aaptBinary = Jar.getResourceAsFile("/prebuilt/windows/" + aaptVersion + ".exe", AaptManager.class);
             } else {
@@ -64,7 +70,7 @@ public class AaptManager {
     }
 
     public static String getAaptExecutionCommand(String aaptPath, File aapt) throws BrutException {
-        if (! aaptPath.isEmpty()) {
+        if (!aaptPath.isEmpty()) {
             File aaptFile = new File(aaptPath);
             if (aaptFile.canRead() && aaptFile.exists()) {
                 //noinspection ResultOfMethodCallIgnored
