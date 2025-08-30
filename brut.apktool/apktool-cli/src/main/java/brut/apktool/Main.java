@@ -173,6 +173,21 @@ public class Main {
             .desc("Disable crunching of resource files during the build step.")
             .build();
 
+    private static final Option shortenResPathsOption = Option.builder("src")
+            .longOpt("shorten-res-paths")
+            .desc("Shortens the paths of resources inside the APK.")
+            .build();
+
+    private static final Option enableSparseEncodingOption = Option.builder("ese")
+            .longOpt("enable-sparse-encoding")
+            .desc("Enables encoding of sparse entries using a binary search tree. This option is useful for optimization of APK size but at the cost of resource retrieval performance.")
+            .build();
+
+    private static final Option collapseResNamesOption = Option.builder("crn")
+            .longOpt("collapse-res-names")
+            .desc("Collapses resource names to a single value in the key string pool.")
+            .build();
+
     private static final Option buildNoApkOption = Option.builder("na")
             .longOpt("no-apk")
             .desc("Disable repacking of the built files into a new apk.")
@@ -274,6 +289,9 @@ public class Main {
                 buildOptions.addOption(buildNetSecConfOption);
                 buildOptions.addOption(buildNoApkOption);
                 buildOptions.addOption(buildNoCrunchOption);
+                buildOptions.addOption(shortenResPathsOption);
+                buildOptions.addOption(enableSparseEncodingOption);
+                buildOptions.addOption(collapseResNamesOption);
                 buildOptions.addOption(buildUseAapt1Option);
                 buildOptions.addOption(jobsOption);
                 buildOptions.addOption(quietOption);
@@ -585,6 +603,15 @@ public class Main {
         }
         if (cli.hasOption(buildNoCrunchOption)) {
             config.setNoCrunch(true);
+        }
+        if (cli.hasOption(shortenResPathsOption)) {
+            config.shortenResPaths = true;
+        }
+        if (cli.hasOption(enableSparseEncodingOption)) {
+            config.enableSparseEncoding = true;
+        }
+        if (cli.hasOption(collapseResNamesOption)) {
+            config.collapseResNames = true;
         }
         if (cli.hasOption(buildNoApkOption)) {
             config.setNoApk(true);

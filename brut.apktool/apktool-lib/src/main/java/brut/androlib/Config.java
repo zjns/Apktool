@@ -76,6 +76,12 @@ public final class Config {
     private File mAaptBinary;
     private int mAaptVersion;
 
+    // Optimize options, only supported by aapt2.
+    // see https://developer.android.com/tools/aapt2#optimize_options
+    public boolean shortenResPaths;
+    public boolean enableSparseEncoding;
+    public boolean collapseResNames;
+
     public Config() {
         // Common options
         mJobs = Math.min(Runtime.getRuntime().availableProcessors(), 8);

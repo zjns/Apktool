@@ -22,7 +22,10 @@ import brut.common.BrutException;
 import brut.util.OS;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -210,6 +213,46 @@ public class AaptInvoker {
             LOGGER.fine(cmd.toString());
         } catch (BrutException ex) {
             throw new AndrolibException(ex);
+        }
+
+        if (mConfig.shortenResPaths || mConfig.enableSparseEncoding || mConfig.collapseResNames) {
+            Path inputFilePath = new File(apkFile.getParent(), apkFile.getName() + ".tmp").toPath();
+            Path apkFilePath = apkFile.toPath();
+            try {
+                Files.copy(apkFilePath, inputFilePath, StandardCopyOption.REPLACE_EXISTING);
+                Files.delete(apkFilePath);
+            } catch (IOException e) {
+                throw new AndrolibException(e);
+            }
+
+            cmd = new ArrayList<>();
+            cmd.add(aaptPath);
+            cmd.add("optimize");
+
+            cmd.add("-o");
+            cmd.add(apkFilePath.toString());
+
+            if (mConfig.shortenResPaths) {
+                cmd.add("--shorten-resource-paths");
+            }
+
+            if (mConfig.enableSparseEncoding) {
+                cmd.add("--enable-sparse-encoding");
+            }
+
+            if (mConfig.collapseResNames) {
+                cmd.add("--collapse-resource-names");
+            }
+
+            cmd.add(inputFilePath.toString());
+
+            try {
+                OS.exec(cmd.toArray(new String[0]));
+                LOGGER.fine("aapt2 optimize command ran: ");
+                LOGGER.fine(cmd.toString());
+            } catch (BrutException ex) {
+                throw new AndrolibException(ex);
+            }
         }
     }
 
