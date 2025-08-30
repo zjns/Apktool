@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsesFramework implements YamlSerializable {
-    private final List<Integer> mIds;
+    private List<Integer> mIds;
     private String mTag;
 
     public UsesFramework() {
@@ -67,6 +67,10 @@ public class UsesFramework implements YamlSerializable {
 
     public List<Integer> getIds() {
         return mIds;
+    }
+
+    public void setIds(List<Integer> ids) {
+        mIds = ids;
     }
 
     public String getTag() {

@@ -28,8 +28,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class ApkInfo implements YamlSerializable {
-    public static final String[] RESOURCES_DIRNAMES = { "res", "r", "R" };
-    public static final String[] RAW_DIRNAMES = { "assets", "lib" };
+    public static final String[] RESOURCES_DIRNAMES = {"res", "r", "R"};
+    public static final String[] RAW_DIRNAMES = {"assets", "lib"};
 
     public static final Pattern ORIGINAL_FILENAMES_PATTERN = Pattern.compile(
         "AndroidManifest\\.xml|META-INF/[^/]+\\.(RSA|SF|MF)|stamp-cert-sha256");
@@ -40,7 +40,7 @@ public class ApkInfo implements YamlSerializable {
 
     private String mVersion;
     private String mApkFileName;
-    private final UsesFramework mUsesFramework;
+    private UsesFramework mUsesFramework;
     private final List<String> mUsesLibrary;
     private final SdkInfo mSdkInfo;
     private final PackageInfo mPackageInfo;
@@ -208,6 +208,10 @@ public class ApkInfo implements YamlSerializable {
 
     public UsesFramework getUsesFramework() {
         return mUsesFramework;
+    }
+
+    public void setUsesFramework(UsesFramework usesFramework) {
+        this.mUsesFramework = usesFramework;
     }
 
     public List<String> getUsesLibrary() {

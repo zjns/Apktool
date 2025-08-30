@@ -29,6 +29,7 @@ import brut.androlib.res.xml.ResXmlUtils;
 import brut.directory.Directory;
 import brut.directory.DirectoryException;
 import brut.directory.ExtFile;
+import brut.util.OSDetection;
 import brut.xmlpull.MXSerializer;
 import com.google.common.collect.Sets;
 import org.xmlpull.v1.XmlSerializer;
@@ -78,7 +79,7 @@ public class ResourcesDecoder {
 
         ResStreamDecoderContainer decoders = new ResStreamDecoderContainer();
         decoders.setDecoder("raw", new ResRawStreamDecoder());
-        decoders.setDecoder("9patch", new Res9patchStreamDecoder());
+        decoders.setDecoder("9patch", OSDetection.isAndroid() ? new Res9patchAndroidStreamDecoder() : new Res9patchStreamDecoder());
 
         AXmlResourceParser axmlParser = new AXmlResourceParser(mResTable);
         XmlSerializer xmlSerializer = newXmlSerializer();
@@ -114,7 +115,7 @@ public class ResourcesDecoder {
         }
     }
 
-    private XmlSerializer newXmlSerializer() throws AndrolibException {
+    public XmlSerializer newXmlSerializer() throws AndrolibException {
         try {
             XmlSerializer serial = new MXSerializer();
             serial.setFeature(MXSerializer.FEATURE_ATTR_VALUE_NO_ESCAPE, true);

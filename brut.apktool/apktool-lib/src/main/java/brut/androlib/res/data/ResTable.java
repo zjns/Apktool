@@ -72,6 +72,10 @@ public class ResTable {
         return mMainPackage;
     }
 
+    public Set<ResPackage> getFramePackages() {
+        return mFramePackages;
+    }
+
     public void loadMainPackage() throws AndrolibException {
         LOGGER.info("Loading resource table...");
         File apkFile = mApkInfo.getApkFile();
@@ -99,7 +103,7 @@ public class ResTable {
     }
 
     private ResPackage[] loadResPackagesFromApk(File apkFile, boolean keepBrokenResources)
-            throws AndrolibException {
+        throws AndrolibException {
         try (
             ExtFile inFile = new ExtFile(apkFile);
             BufferedInputStream in = new BufferedInputStream(
@@ -217,7 +221,7 @@ public class ResTable {
     }
 
     private ResPackage loadResPackageFromApk(File apkFile, boolean keepBrokenResources)
-            throws AndrolibException {
+        throws AndrolibException {
         LOGGER.info("Loading resource table from file: " + apkFile);
         ResPackage[] pkgs = loadResPackagesFromApk(apkFile, keepBrokenResources);
         ResPackage pkg;
