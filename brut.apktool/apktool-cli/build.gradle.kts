@@ -56,10 +56,21 @@ tasks.register<JavaExec>("proguard") {
         JavaVersion.current().isJava11Compatible
     }
 
+    val androidSdkDir = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+    ?: throw GradleException("请设置 ANDROID_HOME 或 ANDROID_SDK_ROOT 环境变量")
+
+    val platformsDir = file("$androidSdkDir/platforms")
+    val latestPlatform = platformsDir.listFiles()
+        ?.filter { it.isDirectory && it.name.startsWith("android-") }
+        ?.maxByOrNull { it.name.removePrefix("android-").toInt() }
+        ?: throw GradleException("未找到 Android SDK 平台目录")
+
+    val androidJar = file("${latestPlatform.absolutePath}/android.jar")
+
     val proguardRules = file("proguard-rules.pro")
     val originalJar = shadowJar.outputs.files.singleFile
 
-    inputs.files(originalJar.toString(), proguardRules)
+    inputs.files(originalJar.toString(), proguardRules, androidJar)
     outputs.file("build/libs/apktool-$apktoolVersion.jar")
 
     classpath(r8)
@@ -71,6 +82,7 @@ tasks.register<JavaExec>("proguard") {
         "--no-minification",
         "--map-diagnostics:UnusedProguardKeepRuleDiagnostic", "info", "none",
         "--lib", javaLauncher.get().metadata.installationPath.toString(),
+        "--lib", androidJar.absolutePath,
         "--output", outputs.files.singleFile.toString(),
         "--pg-conf", proguardRules.toString(),
         originalJar.toString()
