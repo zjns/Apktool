@@ -68,7 +68,7 @@ public final class AaptManager {
         }
         aaptPath.append("/");
         aaptPath.append(aaptName);
-        if (OSDetection.is64Bit()) {
+        if (!OSDetection.isTermux() && OSDetection.is64Bit()) {
             aaptPath.append("_64");
         }
         if (OSDetection.isWindows()) {
